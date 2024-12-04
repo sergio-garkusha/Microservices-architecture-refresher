@@ -1,0 +1,80 @@
+services:
+  backend:
+    build:
+      context: ./services/backend
+      dockerfile: Dockerfile
+    container_name: backend
+    develop:
+      watch:
+        - action: sync
+          path: .
+          target: /backend
+          ignore:
+            - .venv/
+        - action: rebuild
+          path: ./pyproject.toml
+    volumes:
+      - ./services/backend:/backend
+    ports:
+      - "8000:8000"
+    depends_on:
+      backend-db:
+        condition: service_healthy
+
+  core:
+    build:
+      context: ./services/core
+      dockerfile: Dockerfile
+    container_name: core
+    develop:
+      watch:
+        - action: sync
+          path: .
+          target: /core
+          ignore:
+            - .venv/
+        - action: rebuild
+          path: ./pyproject.toml
+    volumes:
+      - ./services/core:/core
+    ports:
+      - "8001:5000"
+    depends_on:
+      core-db:
+        condition: service_healthy
+
+  backend-db:
+    image: mysql:latest
+    container_name: backend-db
+    restart: always
+    environment:
+      MYSQL_DATABASE: config
+      MYSQL_USER: microservice 
+      MYSQL_PASSWORD: microservice 
+      MYSQL_ROOT_PASSWORD: microservice 
+    volumes:
+      - backenddbdata:/var/lib/mysql
+    ports:
+      - 3306:3306
+    healthcheck:
+      test: mysqladmin ping -h 127.0.0.1 -u $$MYSQL_USER --password=$$MYSQL_PASSWORD
+
+  core-db:
+    image: mysql:latest
+    container_name: core-db
+    restart: always
+    environment:
+      MYSQL_DATABASE: core
+      MYSQL_USER: microservice 
+      MYSQL_PASSWORD: microservice 
+      MYSQL_ROOT_PASSWORD: microservice 
+    volumes:
+      - coredbdata:/var/lib/mysql
+    ports:
+      - 3307:3306
+    healthcheck:
+      test: mysqladmin ping -h 127.0.0.1 -u $$MYSQL_USER --password=$$MYSQL_PASSWORD
+
+volumes:
+  backenddbdata:
+  coredbdata:

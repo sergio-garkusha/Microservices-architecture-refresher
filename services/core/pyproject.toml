@@ -1,0 +1,21 @@
+[project]
+name = "core"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "Flask-SQLAlchemy==2.4.4",
+    "SQLAlchemy==1.3.20",
+    "Flask-Migrate==2.5.3",
+    "requests==2.28.1",
+    "mysqlclient==2.1.1",
+    "Flask-Cors==3.0.9",
+    "markupsafe==2.0.1",
+    "itsdangerous<2.0.1",
+    "jinja2<3.1.0",
+    "pika==1.3.1",
+    "werkzeug<2.0.1",
+    "pytz==2022.7.1",
+    "flask>=2.1.3",
+]
