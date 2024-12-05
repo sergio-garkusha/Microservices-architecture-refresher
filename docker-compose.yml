@@ -75,6 +75,20 @@ services:
     healthcheck:
       test: mysqladmin ping -h 127.0.0.1 -u $$MYSQL_USER --password=$$MYSQL_PASSWORD
 
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    container_name: react-client
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./client:/client
+      - client_node_modules:/client/node_modules
+    stdin_open: true
+    tty: true
+
 volumes:
   backenddbdata:
   coredbdata:
+  client_node_modules:
